@@ -4,15 +4,21 @@
  */
 
 $(function () {
-
   var $map = $('#map');
   var $mapMenu = $('#map_menu');
   var $markerMenu = $('#marker_menu');
   var $polylineMenu = $('#polyline_menu');
   var $export = $('#export');
   var $select = $('#select');
+  var $loading = $('#loading');
+
   var _map = null;
   var _markers = [];
+  var _polyline = null;
+  var _polygons = [];
+
+  var _taipei = ['中山區', '中正區', '信義區', '內湖區', '北投區', '南港區', '士林區', '大同區', '大安區', '文山區', '松山區', '萬華區'];
+  var _newTaipei = ['三峽區', '三芝區', '三重區', '中和區', '五股區', '八里區', '土城區', '坪林區', '平溪區', '新店區', '新莊區', '板橋區', '林口區', '樹林區', '永和區', '汐止區', '泰山區', '淡水區', '深坑區', '烏來區', '瑞芳區', '石碇區', '石門區', '萬里區', '蘆洲區', '貢寮區', '金山區', '雙溪區', '鶯歌區'];
  
   function formatDate (d) {
     return  (d.getFullYear () + '_' + (d.getMonth () + 1) + '_' + d.getDate ()) + '_' + (d.getHours () + '_' + d.getMinutes () + '_' + d.getSeconds ());
@@ -44,12 +50,28 @@ $(function () {
     return new google.maps.Point ((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
   }
   function setPolyline () {
+    if (_markers.length > 2) {
+      if (!_polyline)
+        _polyline = new google.maps.Polygon({
+          map: _map,
+          strokeColor: 'rgba(252, 30, 112, 1)',
+          strokeOpacity: 0,
+          strokeWeight: 0,
+          fillColor: 'rgba(252, 30, 112, 1)',
+          fillOpacity: 0.55,
+          draggable: false,
+          geodesic: false
+        });
+
+      _polyline.setPath (_markers.map (function (t) { return t.position; }));
+    }
+
     for (var i = 0; i < _markers.length; i++) {
       if (!_markers[i].polyline) {
         var polyline = new google.maps.Polyline ({
           map: _map,
-          strokeColor: 'rgba(68, 77, 145, .6)',
-          strokeWeight: 4,
+          strokeColor: 'rgba(120, 0, 0, 1)',
+          strokeWeight: 3,
           drawPath: function () {
             var prevPosition = this.prevMarker.getPosition ();
             var nextPosition = this.nextMarker.getPosition ();
@@ -71,7 +93,7 @@ $(function () {
         _markers[i].polyline = polyline;
       }
       
-      _markers[i].polyline.prevMarker = _markers[i - 1] ? _markers[i - 1] : _markers[i];
+      _markers[i].polyline.prevMarker = _markers[i - 1] ? _markers[i - 1] : _markers[_markers.length - 1];
       _markers[i].polyline.nextMarker = _markers[i];
       _markers[i].polyline.drawPath ();
     }
@@ -93,10 +115,10 @@ $(function () {
         position: position,
         icon: {
             path: circlePath (5),
-            strokeColor: 'rgba(50, 60, 140, .4)',
+            strokeColor: 'rgba(120, 0, 0, .75)',
             strokeWeight: 1,
-            fillColor: 'rgba(68, 77, 145, .95)',
-            fillOpacity: 0.5
+            fillColor: 'rgba(255, 0, 0, .75)',
+            fillOpacity: 1
           },
         getPixelPosition: getPixelPosition
       });
@@ -111,7 +133,46 @@ $(function () {
     
     setPolyline ();
   }
+  function loadEditTown (t) {
+    $.getJSON ('js/towns/' + t + '.json', function (result) {
+      result.forEach (function (t, i) {
+        initMarker (new google.maps.LatLng (t[0], t[1]), i);
+      });
+    });
+  }
+  function loadTown (t, b) {
+    $.getJSON ('js/towns/' + t + '.json', function (result) {
+      var latLngs = result.map (function (t) {
+        return new google.maps.LatLng (t[0], t[1]);
+      });
+      var polygon = new google.maps.Polygon ({
+                      path: latLngs,
+                      map: _map,
+                      fillColor: b ? 'rgba(0, 0, 255, 1)' : 'rgba(0, 86, 0, 1)',
+                      fillOpacity: 0.35,
+                      strokeColor: b ? 'rgba(0, 0, 255, 1)' : 'rgba(0, 86, 0, 1)',
+                      strokeWeight: 0.65,
+                    });
+      polygon.key = t;
 
+
+      polygon.addListener ('click', function (e) {
+        $select.val (this.key).change ();
+      });
+
+      _polygons.push (polygon);
+
+      if (_polygons.length == _taipei.concat (_newTaipei).length)
+        $select.change ();
+    });
+  }
+  function closeLoading () {
+    $loading.addClass ('hide').fadeOut (function () {
+      $(this).hide (function () {
+        $loading.remove ();
+      });
+    });
+  }
   function initialize () {
     _map = new google.maps.Map ($map.get (0), {
         zoom: 11,
@@ -130,14 +191,11 @@ $(function () {
               .data ('lat', e.latLng.lat ())
               .data ('lng', e.latLng.lng ()).addClass ('show');
     });
+
     google.maps.event.addListener (_map, 'mousemove', function () {
       $mapMenu.css ({ top: -100, left: -100 }).removeClass ('show');
       $markerMenu.css ({ top: -100, left: -100 }).removeClass ('show');
       $polylineMenu.css ({ top: -100, left: -100 }).removeClass ('show');
-    });
-
-    google.maps.event.addListener (_map, 'click', function (e) {
-      initMarker (e.latLng, 0);
     });
 
     $mapMenu.find ('.add_marker').click (function () {
@@ -164,15 +222,36 @@ $(function () {
       $polylineMenu.css ({ top: -100, left: -100 }).removeClass ('show');
     });
 
-
-
     $export.hide ().click (function () {
-      var a = 'var  = [' + _markers.map (function (marker) {
-        return 'new google.maps.LatLng (' + marker.position.lat () + ', ' + marker.position.lng () + ')'
-      }) + '];';
-      saveAs(new Blob([a], {type: "text/plain;charset=utf-8"}), formatDate (new Date()) + ".txt");
+      saveAs (new Blob (['[\n' + _markers.map (function (marker) {
+        return '  [' + marker.position.lat () + ', ' + marker.position.lng () + ']';
+      }).join (',  \n') + '\n]'], {type: "text/plain;charset=utf-8"}), $select.val () + ".json");
+    });
+    
+    $select.append ($('<optgroup />').attr ('label', '台北市').append (_taipei.map (function (t) {
+      return $('<option />').val (t).text (t);
+    }))).append ($('<optgroup />').attr ('label', '新北市').append (_newTaipei.map (function (t) {
+      return $('<option />').val (t).text (t);
+    })));
+
+    $select.change (function () {
+      var key = $(this).val ();
+
+      _markers.forEach (function (t) {
+        t.setMap (null);
+        t.polyline.setMap (null);
+      });
+      _markers = [];
+
+      _polygons.forEach (function (t) { if (!t.map) t.setMap (_map); });
+      _polygons.forEach (function (t) { if (t.key == key) t.setMap (null); });
+      _polygons.forEach (function (t) { if (t.key == key) loadEditTown (key); });
     });
 
+    _taipei.forEach (function (t) { loadTown (t, 1); });
+    _newTaipei.forEach (function (t) { loadTown (t, 0); });
+
+    closeLoading ();
   }
 
   google.maps.event.addDomListener (window, 'load', initialize);

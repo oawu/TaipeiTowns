@@ -35,6 +35,14 @@ html {
   }
 }
 
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  @include loading();
+}
+
 a[href^="http://maps.google.com/maps"], a[href^="https://maps.google.com/maps"] {
   display: none !important;
 }
