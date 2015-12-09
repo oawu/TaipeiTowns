@@ -31,7 +31,7 @@
 * 將該 `.json` 檔案放置 `towns/` 下所對應的行政區，即可修正原本的範圍座標。
 ![行政區域範圍座標](img/replace-compressor.png)
 
-* 將修改完後的 Repository commit 後，對 [TaipeiTowns](https://github.com/comdan66/TaipeiTowns) 發 **Pull Requests**，待 [OA](https://github.com/comdan66) 確認後即會 merge。
+* 修改完 commit 後，對 [TaipeiTowns](https://github.com/comdan66/TaipeiTowns/pulls) 發 **Pull Requests**，待 [OA](https://github.com/comdan66) 確認後即會 merge。
 
 
 <br/>
