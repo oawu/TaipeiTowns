@@ -32,11 +32,25 @@
 
     <link href="css/public.css" rel="stylesheet" type="text/css" />
 
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=geometry&language=zh-TW" language="javascript" type="text/javascript" ></script>
     <script src="js/jquery_v1.10.2/jquery-1.10.2.min.js" language="javascript" type="text/javascript" ></script>
     <script src="js/public.js" language="javascript" type="text/javascript" ></script>
 
   </head>
   <body lang="zh-tw">
+
+    <div class='map'>
+      <i></i><i></i><i></i><i></i>
+      <div id='map'></div>
+
+      <select id='select'></select>
+
+      <button type='button' id='export'>匯出經緯度</button>
+
+      <div id='map_menu'><div><div class='add_marker'>新增節點</div></div></div>
+      <div id='marker_menu'><div><div class='del'>刪除節點</div></div></div>
+      <div id='polyline_menu'><div><div class='add'>插入節點</div></div></div>
+    </div>
 
   </body>
 </html>
