@@ -135,9 +135,13 @@ $(function () {
   }
   function loadEditTown (t) {
     $.getJSON ('towns/' + t + '.json', function (result) {
+      var bounds = new google.maps.LatLngBounds ();
       result.forEach (function (t, i) {
-        initMarker (new google.maps.LatLng (t[0], t[1]), i);
+        var latLng = new google.maps.LatLng (t[0], t[1]);
+        bounds.extend (latLng);
+        initMarker (latLng, i);
       });
+      _map.fitBounds (bounds);
     });
   }
   function loadTown (t, b) {

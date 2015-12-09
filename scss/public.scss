@@ -85,11 +85,35 @@ a[href^="http://maps.google.com/maps"], a[href^="https://maps.google.com/maps"] 
     display: none;
     @include button;
   }
+  #github {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    display: none;
+    @include button('pink');
+  }
 
   #select {
     position: absolute;
     left: 10px;
     top: 10px;
+  }
+  > span {
+    position: absolute;
+    bottom: 10px;
+    left: calc((100% - 300px) / 2);
+    display: inline-block;
+    width: 300px;
+    font-size: 14px;
+    padding: 10px 5px;
+    border: 1px solid rgba(39, 40, 34, .4);
+    background-color: rgba(255, 255, 255, 1);
+    color: rgba(39, 39, 34, 1);
+    font-weight: bold;
+    @include border-radius(2px);
+    @include transition(all .3s);
+    @include box-shadow(0 0 15px 1px rgba(0, 0, 0, 0.2));
+    @include opacity(.85);
   }
   #marker_menu, #map_menu, #polyline_menu {
     position: absolute;
