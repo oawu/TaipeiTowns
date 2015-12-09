@@ -17,8 +17,10 @@ $(function () {
   var _polyline = null;
   var _polygons = [];
 
-  var _taipei = ['中山區', '中正區', '信義區', '內湖區', '北投區', '南港區', '士林區', '大同區', '大安區', '文山區', '松山區', '萬華區'];
-  var _newTaipei = ['三峽區', '三芝區', '三重區', '中和區', '五股區', '八里區', '土城區', '坪林區', '平溪區', '新店區', '新莊區', '板橋區', '林口區', '樹林區', '永和區', '汐止區', '泰山區', '淡水區', '深坑區', '烏來區', '瑞芳區', '石碇區', '石門區', '萬里區', '蘆洲區', '貢寮區', '金山區', '雙溪區', '鶯歌區'];
+  var _city = [
+    {city: '台北市', color: 'rgba(0, 0, 255, 1)', towns: ['中山區', '中正區', '信義區', '內湖區', '北投區', '南港區', '士林區', '大同區', '大安區', '文山區', '松山區', '萬華區']},
+    {city: '新北市', color: 'rgba(0, 86, 0, 1)', towns: ['三峽區', '三芝區', '三重區', '中和區', '五股區', '八里區', '土城區', '坪林區', '平溪區', '新店區', '新莊區', '板橋區', '林口區', '樹林區', '永和區', '汐止區', '泰山區', '淡水區', '深坑區', '烏來區', '瑞芳區', '石碇區', '石門區', '萬里區', '蘆洲區', '貢寮區', '金山區', '雙溪區', '鶯歌區']},
+  ];
  
   function formatDate (d) {
     return  (d.getFullYear () + '_' + (d.getMonth () + 1) + '_' + d.getDate ()) + '_' + (d.getHours () + '_' + d.getMinutes () + '_' + d.getSeconds ());
@@ -88,7 +90,6 @@ $(function () {
                        .data ('lat', e.latLng.lat ())
                        .data ('lng', e.latLng.lng ())
                        .addClass ('show').polyline = polyline;
-                              
         });
         _markers[i].polyline = polyline;
       }
@@ -133,8 +134,8 @@ $(function () {
     
     setPolyline ();
   }
-  function loadEditTown (t) {
-    $.getJSON ('towns/' + t + '.json', function (result) {
+  function loadEditTown (k, t) {
+    $.getJSON ('towns/' + k + '/' + t + '.json', function (result) {
       var bounds = new google.maps.LatLngBounds ();
       result.forEach (function (t, i) {
         var latLng = new google.maps.LatLng (t[0], t[1]);
@@ -144,29 +145,29 @@ $(function () {
       _map.fitBounds (bounds);
     });
   }
-  function loadTown (t, b) {
-    $.getJSON ('towns/' + t + '.json', function (result) {
+  function loadTown (k, t, b, c) {
+    $.getJSON ('towns/' + k + '/' + t + '.json', function (result) {
       var latLngs = result.map (function (t) {
         return new google.maps.LatLng (t[0], t[1]);
       });
       var polygon = new google.maps.Polygon ({
                       path: latLngs,
                       map: _map,
-                      fillColor: b ? 'rgba(0, 0, 255, 1)' : 'rgba(0, 86, 0, 1)',
+                      fillColor: c,
                       fillOpacity: 0.35,
-                      strokeColor: b ? 'rgba(0, 0, 255, 1)' : 'rgba(0, 86, 0, 1)',
+                      strokeColor: c,
                       strokeWeight: 0.65,
                     });
-      polygon.key = t;
-
+      polygon.city = k;
+      polygon.town = t;
 
       polygon.addListener ('click', function (e) {
-        $select.val (this.key).change ();
+        $select.val (this.city + '-' + this.town).change ();
       });
 
       _polygons.push (polygon);
 
-      if (_polygons.length == _taipei.concat (_newTaipei).length)
+      if (_polygons.length == _city.length)
         $select.change ();
     });
   }
@@ -231,12 +232,12 @@ $(function () {
         return '  [' + marker.position.lat () + ', ' + marker.position.lng () + ']';
       }).join (',  \n') + '\n]'], {type: "text/plain;charset=utf-8"}), $select.val () + ".json");
     });
-    
-    $select.append ($('<optgroup />').attr ('label', '台北市').append (_taipei.map (function (t) {
-      return $('<option />').val (t).text (t);
-    }))).append ($('<optgroup />').attr ('label', '新北市').append (_newTaipei.map (function (t) {
-      return $('<option />').val (t).text (t);
-    })));
+
+    $select.append (_city.map (function (t) {
+      return $('<optgroup />').attr ('label', t.city).append (t.towns.map (function (u) {
+        return $('<option />').val (t.city + '-' + u).text (u);
+      }));
+    }));
 
     $select.change (function () {
       var key = $(this).val ();
@@ -248,12 +249,15 @@ $(function () {
       _markers = [];
 
       _polygons.forEach (function (t) { if (!t.map) t.setMap (_map); });
-      _polygons.forEach (function (t) { if (t.key == key) t.setMap (null); });
-      _polygons.forEach (function (t) { if (t.key == key) loadEditTown (key); });
+      _polygons.forEach (function (t) { if (t.city + '-' + t.town == key) t.setMap (null); });
+      _polygons.forEach (function (t) { if (t.city + '-' + t.town == key) loadEditTown (t.city, t.town); });
     });
 
-    _taipei.forEach (function (t) { loadTown (t, 1); });
-    _newTaipei.forEach (function (t) { loadTown (t, 0); });
+    _city.forEach (function (t) {
+      t.towns.forEach (function (u) {
+        loadTown (t.city, u, 1, t.color);
+      });
+    });
 
     closeLoading ();
   }
