@@ -15,10 +15,16 @@
 
 <br/>
 ## 步驟
+* 點擊 [http://comdan66.github.io/TaipeiTowns/](http://comdan66.github.io/TaipeiTowns/) 右上方 Fork。
+![行政區域範圍座標](img/fork-compressor.png)
+
+* Clone 專案到本機。
+![行政區域範圍座標](img/clone-compressor.png)
+
 * 各鄉鎮行政區域的檔案放置在 `towns/` 下，分別依照不同縣市資料夾分類，每個檔案接用區域名稱命名。
 ![行政區域範圍座標](img/towns-compressor.png)
 
-* 開啟網頁後 [http://comdan66.github.io/TaipeiTowns/](http://comdan66.github.io/TaipeiTowns/)，於左上角選擇要編輯的區域。
+* 開啟網頁後 [http://127.0.0.1/TaipeiTowns/](http://127.0.0.1/TaipeiTowns/)，於左上角選擇要編輯的區域。
 ![行政區域範圍座標](img/select-compressor.png)
 
 * 利用滑鼠右鍵，會有 新增、插入、刪除 節點的功能，可以對所選的區域做編輯。
@@ -26,12 +32,18 @@
 
 * 編輯完後，點擊右上方 **匯出經緯度** 的按鈕後，即可下載行政區的 `.json` 檔案。
 ![行政區域範圍座標](img/export-compressor.png)
+
+* 下載剛編輯的行政區域 .json 檔案。
 ![行政區域範圍座標](img/download-compressor.png)
 
 * 將該 `.json` 檔案放置 `towns/` 下所對應的行政區，即可修正原本的範圍座標。
 ![行政區域範圍座標](img/replace-compressor.png)
 
-* 修改完 commit 後，對 [TaipeiTowns](https://github.com/comdan66/TaipeiTowns/pulls) 發 **Pull Requests**，待 [OA](https://github.com/comdan66) 確認後即會 merge。
+* 修改完 commit 後，對 [TaipeiTowns](https://github.com/comdan66/TaipeiTowns/pulls) 發 **Pull Requests**。
+![行政區域範圍座標](img/pull_request-compressor.png)
+
+* [OA](https://github.com/comdan66) 確認後即會 merge。
+![行政區域範圍座標](img/merge-compressor.png)
 
 
 <br/>
