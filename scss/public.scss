@@ -89,8 +89,13 @@ a[href^="http://maps.google.com/maps"], a[href^="https://maps.google.com/maps"] 
     position: absolute;
     top: 50px;
     right: 10px;
-    display: none;
     @include button('pink');
+  }
+  #more {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    @include button('orange');
   }
 
   #select {
