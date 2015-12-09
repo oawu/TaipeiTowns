@@ -7,6 +7,10 @@
 
 
 <br/>
+## DEMO
+* 範例網址：[http://comdan66.github.io/TaipeiTowns/index.html](http://comdan66.github.io/TaipeiTowns/index.html)
+
+<br/>
 ## 簡介
 * 開始主要目的是為了取得雙北市行政區域範圍座標。
 * 但因為 Google maps js API 找不到可以取得行政區的範圍座標，故才自己畫完雙北市的範圍座標。
