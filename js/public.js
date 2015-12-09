@@ -134,14 +134,14 @@ $(function () {
     setPolyline ();
   }
   function loadEditTown (t) {
-    $.getJSON ('js/towns/' + t + '.json', function (result) {
+    $.getJSON ('towns/' + t + '.json', function (result) {
       result.forEach (function (t, i) {
         initMarker (new google.maps.LatLng (t[0], t[1]), i);
       });
     });
   }
   function loadTown (t, b) {
-    $.getJSON ('js/towns/' + t + '.json', function (result) {
+    $.getJSON ('towns/' + t + '.json', function (result) {
       var latLngs = result.map (function (t) {
         return new google.maps.LatLng (t[0], t[1]);
       });
