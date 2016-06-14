@@ -8,7 +8,7 @@
 
 <br/>
 ## DEMO
-* 範例網址：[http://works.ioa.tw/TaipeiTowns/index.html](http://works.ioa.tw/TaipeiTowns/index.html)
+* 範例網址：[http://works.ioa.tw/TaipeiTowns/](http://works.ioa.tw/TaipeiTowns/)
 
 <br/>
 ## 簡介
