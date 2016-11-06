@@ -8,7 +8,7 @@
 
 <br/>
 ## DEMO
-* 範例網址：[http://works.ioa.tw/TaipeiTowns/](http://works.ioa.tw/TaipeiTowns/)
+* 範例網址：[http://works.ioa.tw/TaipeiTowns/index.html](http://works.ioa.tw/TaipeiTowns/index.html)
 
 <br/>
 ## 簡介
@@ -19,7 +19,7 @@
 
 <br/>
 ## 步驟
-* 點擊 [http://works.ioa.tw/TaipeiTowns/](http://works.ioa.tw/TaipeiTowns/) 右上方 Fork。
+* 點擊 [http://works.ioa.tw/TaipeiTowns/index.html](http://works.ioa.tw/TaipeiTowns/index.html) 右上方 Fork。
 ![行政區域範圍座標](img/fork-compressor.png)
 
 * Clone 專案到本機。
